@@ -1,14 +1,10 @@
 import {
-  Brush,
   ChartNoAxesColumn,
-  LinkIcon,
   MoreHorizontal,
-  User,
 } from 'lucide-react';
-import Link from 'next/link';
 import { ReactNode } from 'react';
 
-import { cn } from '@/lib/utils';
+import { DashboardNav } from '@/components/dashboard/dashboard-nav';
 
 type DashboardShellProps = {
   children: ReactNode;
@@ -17,27 +13,6 @@ type DashboardShellProps = {
     email: string;
   };
 };
-
-const navItems = [
-  {
-    label: 'Account',
-    href: '/dashboard',
-    icon: User,
-    active: true,
-  },
-  {
-    label: 'Customize',
-    href: '/dashboard/customize',
-    icon: Brush,
-    active: false,
-  },
-  {
-    label: 'Links',
-    href: '/dashboard/links',
-    icon: LinkIcon,
-    active: false,
-  },
-];
 
 export function DashboardShell({ children, user }: DashboardShellProps) {
   const initial = user.name.charAt(0).toUpperCase();
@@ -61,21 +36,7 @@ export function DashboardShell({ children, user }: DashboardShellProps) {
               </div>
             </div>
 
-            <nav className="flex gap-2 overflow-x-auto lg:flex-col lg:overflow-visible">
-              {navItems.map((item) => (
-                <Link
-                  key={item.label}
-                  href={item.href}
-                  className={cn(
-                    'flex h-10 shrink-0 items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground',
-                    item.active && 'bg-primary/15 text-foreground'
-                  )}
-                >
-                  <item.icon data-icon="inline-start" />
-                  {item.label}
-                </Link>
-              ))}
-            </nav>
+            <DashboardNav />
 
             <div className="mt-auto hidden rounded-2xl border border-border bg-background/60 p-4 lg:block">
               <div className="mb-3 flex items-center gap-2 text-sm font-medium">

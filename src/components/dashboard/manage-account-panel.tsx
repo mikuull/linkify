@@ -1,5 +1,7 @@
 import { AtSign, KeyRound, LinkIcon, Settings, UserPen } from 'lucide-react';
+import Link from 'next/link';
 
+import { goToPublicProfileAction } from '@/app/dashboard/actions';
 import { Button } from '@/components/ui/button';
 
 const actions = [
@@ -21,7 +23,11 @@ const actions = [
   },
 ];
 
-export function ManageAccountPanel() {
+type ManageAccountPanelProps = {
+  username: string;
+};
+
+export function ManageAccountPanel({ username }: ManageAccountPanelProps) {
   return (
     <aside className="rounded-2xl bg-card p-5 ring-1 ring-border">
       <div className="mb-4">
@@ -38,9 +44,12 @@ export function ManageAccountPanel() {
             type="button"
             variant="secondary"
             className="justify-start"
+            asChild
           >
-            <action.icon data-icon="inline-start" />
-            {action.label}
+            <Link href="/dashboard">
+              <action.icon data-icon="inline-start" />
+              {action.label}
+            </Link>
           </Button>
         ))}
       </div>
@@ -53,9 +62,11 @@ export function ManageAccountPanel() {
         <p className="mb-3 text-xs leading-5 text-muted-foreground">
           Preview the public page your saved profile links will point to.
         </p>
-        <Button type="button" className="w-full">
-          Open my page
-        </Button>
+        <form action={goToPublicProfileAction}>
+          <Button type="submit" className="w-full">
+            Open /{username}
+          </Button>
+        </form>
       </div>
     </aside>
   );

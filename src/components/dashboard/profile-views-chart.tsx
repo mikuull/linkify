@@ -13,14 +13,22 @@ const chartPoints = [
   '466,150',
 ];
 
-export function ProfileViewsChart() {
+type ProfileViewsChartProps = {
+  totalViews: number;
+  totalClicks: number;
+};
+
+export function ProfileViewsChart({
+  totalViews,
+  totalClicks,
+}: ProfileViewsChartProps) {
   return (
     <div className="rounded-2xl bg-card p-5 ring-1 ring-border">
       <div className="mb-5 flex items-center justify-between">
         <div>
           <h2 className="text-base font-semibold">Link activity</h2>
           <p className="text-sm text-muted-foreground">
-            Link views over the last 12 hours
+            {totalViews} profile views and {totalClicks} link clicks
           </p>
         </div>
         <span className="rounded-xl bg-primary/15 px-3 py-1 text-xs font-medium text-primary">
