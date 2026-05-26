@@ -2,13 +2,16 @@ import { getSessionCookie } from 'better-auth/cookies';
 import { NextRequest, NextResponse } from 'next/server';
 
 const authRoutes = ['/sign-in', '/sign-up'];
+const protectedRoutes = ['/', '/dashboard'];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isAuthRoute = authRoutes.includes(pathname);
+  const isProtectedRoute =
+    protectedRoutes.includes(pathname) || pathname.startsWith('/dashboard/');
   const sessionCookie = getSessionCookie(request.headers);
 
-  if (!sessionCookie && !isAuthRoute) {
+  if (!sessionCookie && isProtectedRoute) {
     return NextResponse.redirect(new URL('/sign-in', request.url));
   }
 
@@ -21,6 +24,6 @@ export function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/((?!api/auth|_next/static|_next/image|favicon.ico|.*\\..*).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)',
   ],
 };
