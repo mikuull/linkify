@@ -19,6 +19,7 @@ model User {
   updatedAt     DateTime
   Session       Session[]
   Account       Account[]
+  profile       Profile?
 
   @@unique([email])
   @@map("user")
@@ -67,4 +68,121 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Profile {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username        String        @unique
+  displayName     String
+  bio             String?
+  avatarUrl       String?
+  location        String?
+  websiteUrl      String?
+  isPublished     Boolean       @default(true)
+  theme           ProfileTheme  @default(DEFAULT)
+  backgroundColor String?
+  textColor       String?
+  accentColor     String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  links           ProfileLink[]
+  socials         SocialLink[]
+  views           ProfileView[]
+  clicks          LinkClick[]
+
+  @@index([username])
+  @@index([isPublished])
+  @@map("profile")
+}
+
+model ProfileLink {
+  id          String      @id @default(cuid())
+  profileId   String
+  profile     Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  title       String
+  url         String
+  description String?
+  icon        String?
+  position    Int         @default(0)
+  isVisible   Boolean     @default(true)
+  clickCount  Int         @default(0)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  clicks      LinkClick[]
+
+  @@index([profileId, position])
+  @@index([profileId, isVisible])
+  @@map("profile_link")
+}
+
+model SocialLink {
+  id        String         @id @default(cuid())
+  profileId String
+  profile   Profile        @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  platform  SocialPlatform
+  label     String?
+  url       String
+  position  Int            @default(0)
+  isVisible Boolean        @default(true)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([profileId, platform])
+  @@index([profileId, position])
+  @@map("social_link")
+}
+
+model ProfileView {
+  id        String   @id @default(cuid())
+  profileId String
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  visitorId String?
+  referrer  String?
+  userAgent String?
+  country   String?
+  createdAt DateTime @default(now())
+
+  @@index([profileId, createdAt])
+  @@map("profile_view")
+}
+
+model LinkClick {
+  id        String      @id @default(cuid())
+  profileId String
+  profile   Profile     @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  linkId    String
+  link      ProfileLink @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  visitorId String?
+  referrer  String?
+  userAgent String?
+  country   String?
+  createdAt DateTime    @default(now())
+
+  @@index([profileId, createdAt])
+  @@index([linkId, createdAt])
+  @@map("link_click")
+}
+
+enum ProfileTheme {
+  DEFAULT
+  MINIMAL
+  GLASS
+  NEON
+}
+
+enum SocialPlatform {
+  INSTAGRAM
+  TIKTOK
+  X
+  YOUTUBE
+  GITHUB
+  LINKEDIN
+  FACEBOOK
+  TWITCH
+  SPOTIFY
+  WEBSITE
+  EMAIL
+  OTHER
 }
